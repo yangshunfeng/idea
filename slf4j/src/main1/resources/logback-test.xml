@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<configuration>
+    <!-- 设置日志输出根目录 -->
+    <property name="log.dir" value="${catalina.base}/logs/"/>
+    <property name="encoding" value="UTF-8"/>
+    <property name="normal-pattern"
+              value="%d{yyyy-MM-dd.HH:mm:ss} %-5level [%thread] [%X{userId}] %logger.%M:%L  %msg%n"/>
+
+    <!-- ch.qos.logback.core.ConsoleAppender 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${normal-pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 按用户分离日志文件 -->
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <Key>userId</Key>
+            <DefaultValue>unknown</DefaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${userId}" class="ch.qos.logback.core.FileAppender">
+                <File>${log.dir}${userId}.log</File>
+                <encoder><pattern>${normal-pattern}</pattern></encoder>
+                <!--只输出INFO和WARN信息-->
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>INFO</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>NEUTRAL</onMismatch>
+                </filter>
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>WARN</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
+            </appender>
+        </sift>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SIFT"/>
+    </root>
+</configuration>

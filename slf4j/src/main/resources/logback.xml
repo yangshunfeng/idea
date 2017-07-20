@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<configuration>
+    <!-- 设置日志输出根目录 -->
+    <property name="log.dir" value="${catalina.base}/logs/"/>
+    <property name="encoding" value="UTF-8"/>
+    <property name="normal-pattern" value="%d{yyyy-MM-dd.HH:mm:ss} %-5level [%thread] %X{QTRACER} [%X{traceId}] %logger.%M:%L  %msg%n"/>
+
+    <!-- ch.qos.logback.core.ConsoleAppender 控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder><pattern>${normal-pattern}</pattern></encoder>
+    </appender>
+
+    <!-- error级别日志 -->
+    <appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.dir}error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.dir}error-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>10</MaxHistory>
+        </rollingPolicy>
+        <encoder><pattern>${normal-pattern}</pattern></encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!-- 其他级别日志 -->
+    <appender name="otherFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.dir}other.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.dir}other-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>10</MaxHistory>
+        </rollingPolicy>
+        <encoder><pattern>${normal-pattern}</pattern></encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <logger name="demo" level="info" additivity="false">
+        <appender-ref ref="errorFile"/>
+        <appender-ref ref="otherFile"/>
+    </logger>
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+</configuration>

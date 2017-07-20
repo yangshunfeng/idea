@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<configuration>
+    <!-- 设置日志输出根目录 -->
+    <property name="log.dir" value="${catalina.base}/logs/"/>
+    <property name="encoding" value="UTF-8"/>
+    <property name="normal-pattern" value="%d{yyyy-MM-dd.HH:mm:ss} %-5level [%thread] %X{QTRACER} [%X{traceId}] %logger.%M:%L  %msg%n"/>
+
+    <!-- ch.qos.logback.core.ConsoleAppender 控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder><pattern>${normal-pattern}</pattern></encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+</configuration>
